@@ -1,0 +1,92 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #111827;
+  color: white;
+}
+
+
+.dashboard {
+
+  padding: 30px;
+
+}
+
+
+header {
+
+  margin-bottom: 30px;
+
+}
+
+
+header h1 {
+
+  font-size: 36px;
+
+}
+
+
+.cards {
+
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+
+}
+
+
+.card {
+
+  background: #1f2937;
+  padding: 25px;
+  border-radius: 12px;
+
+}
+
+
+.card strong {
+
+  font-size: 40px;
+
+}
+
+
+
+.incidents {
+
+  margin-top: 40px;
+
+}
+
+
+table {
+
+  width: 100%;
+  border-collapse: collapse;
+  background: #1f2937;
+
+}
+
+
+th, td {
+
+  padding: 15px;
+  border-bottom: 1px solid #374151;
+  text-align: left;
+
+}
+
+
+.firing {
+
+  color: #ef4444;
+
+}
+
+
+.resolved {
+
+  color: #22c55e;
+
+}

@@ -1,0 +1,40 @@
+groups:
+  - name: nexus-sre-alerts
+
+    rules:
+
+      - alert: NexusServiceDown
+        expr: up{job="nexus-sre-demo"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Nexus service is down"
+
+
+      - alert: NexusHighPaymentErrorRate
+        expr: |
+          (
+            sum(rate(nexus_http_requests_total{
+              route="/payments",
+              status_code=~"5.."
+            }[5m]))
+            /
+            sum(rate(nexus_http_requests_total{
+              route="/payments"
+            }[5m]))
+          ) > 0.01
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High payment failure rate"
+
+
+      - alert: NexusSLOBurnRateHigh
+        expr: nexus:payment_burn_rate:5m > 1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Payment SLO burn rate is high"

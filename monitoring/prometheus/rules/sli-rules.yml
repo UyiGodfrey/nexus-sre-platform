@@ -1,0 +1,78 @@
+groups:
+  - name: nexus-sre-sli
+    interval: 15s
+
+    rules:
+      - record: nexus:payment_availability:5m
+        expr: |
+          sum(
+            rate(
+              nexus_http_requests_total{
+                route="/payments",
+                status_code="200"
+              }[5m]
+            )
+          )
+          /
+          sum(
+            rate(
+              nexus_http_requests_total{
+                route="/payments"
+              }[5m]
+            )
+          )
+
+      - record: nexus:payment_availability:slo
+        expr: |
+          0.999
+      
+      - record: nexus:payment_error_budget
+        expr: |
+          1 - nexus:payment_availability:slo
+
+      - record: nexus:payment_error_budget_consumed
+        expr: |
+          (
+            1 - nexus:payment_availability:5m
+          )
+          /
+          nexus:payment_error_budget
+
+      - record: nexus:payment_burn_rate:5m
+        expr: |
+          (
+            1 - nexus:payment_availability:5m
+          )
+          /
+          nexus:payment_error_budget
+
+      - record: nexus:payment_availability:1h
+        expr: |
+          sum(
+            rate(
+              nexus_http_requests_total{
+                route="/payments",
+                status_code="200"
+              }[1h]
+            )
+          )
+          /
+          sum(
+            rate(
+              nexus_http_requests_total{
+                route="/payments"
+              }[1h]
+            )
+          )
+        
+      - record: nexus:payment_burn_rate:1h
+        expr: |
+          (
+            1 - nexus:payment_availability:1h
+          )
+          /
+          (
+            1 - nexus:payment_availability:slo
+          )
+      
+      
