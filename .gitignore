@@ -1,0 +1,24 @@
+# Node
+node_modules/
+npm-debug.log
+
+# React build
+dist/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Databases
+*.db
+
+# Prometheus data
+data/
+
+# Environment variables
+.env
+.env.*
+
+# OS
+.DS_Store
