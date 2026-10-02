@@ -24,8 +24,8 @@ groups:
 
       - record: nexus:payment_availability:slo
         expr: |
-          0.999
-      
+          0.9999
+
       - record: nexus:payment_error_budget
         expr: |
           1 - nexus:payment_availability:slo
@@ -64,7 +64,7 @@ groups:
               }[1h]
             )
           )
-        
+
       - record: nexus:payment_burn_rate:1h
         expr: |
           (
@@ -74,5 +74,3 @@ groups:
           (
             1 - nexus:payment_availability:slo
           )
-      
-      
