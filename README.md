@@ -1,191 +1,59 @@
-# Nexus SRE Platform 🚀
+# Nexus SRE Platform
 
-An end-to-end Site Reliability Engineering (SRE) incident management platform built to demonstrate real-world reliability engineering practices.
+A portfolio project for practicing service metrics, alerting, SLOs, error budgets, and incident visibility.
 
-The platform collects application alerts, processes incidents, stores incident data, and provides an operational dashboard for monitoring reliability events.
+## What is in the repository
 
----
+- Express demo service with Prometheus metrics in `app/sre-demo-service/`
+- Prometheus scrape configuration and recording/alert rules in `monitoring/prometheus/`
+- Alertmanager routing example in `monitoring/alertmanager/`
+- SLI, SLO, and error-budget documents
+- Failure model and service catalog
+- Flask alert webhook and database code in `automation/alert-webhook/`
+- React dashboard source in `frontend/`
 
-# Project Overview
+The service and monitoring artifacts are present in the repository. There is not yet a single Compose file that starts and wires the whole stack.
 
-Modern systems require more than just deployment. SRE focuses on:
+## Run the metrics demo
 
-- Reliability
-- Availability
-- Monitoring
-- Incident response
-- Service health
-- Error budgets
-- Operational excellence
-
-Nexus SRE Platform demonstrates these principles by creating an incident lifecycle:
-
-Application Failure → Monitoring Alert → Alert Processing → Incident Storage → SRE Dashboard
-
----
-
-#              Architecture
-                Application Service
-                       |
-                       |
-                Prometheus Monitoring
-                       |
-                       |
-                AlertManager
-                       |
-                       |
-             Flask Alert Webhook API
-                       |
-                       |
-              Incident Database
-                       |
-                       |
-              React SRE Dashboard
-
-
----
-
-# Features
-
-## Incident Management
-
-- Receive monitoring alerts
-- Generate incident records
-- Track incident status
-- Store incident history
-- Display operational events
-
----
-
-## SRE Dashboard
-
-The React dashboard provides:
-
-- Total incidents
-- Active incidents
-- Critical incidents
-- Resolved incidents
-- Incident table view
-
----
-
-## Observability
-
-Implemented concepts:
-
-- Metrics collection
-- Alert rules
-- Alert routing
-- Incident visibility
-- Operational monitoring
-
----
-
-# Technology Stack
-
-## Frontend
-
-- React
-- Vite
-- JavaScript
-- CSS
-
-## Backend
-
-- Python
-- Flask
-- Flask-CORS
-
-## Monitoring
-
-- Prometheus
-- AlertManager
-
-## Storage
-
-- SQLite
-
-## Version Control
-
-- Git
-- GitHub
-
----
-
-# Project Structure
-nexus-sre-platform/
-├── frontend/
-│   ├── React Dashboard
-│
-├── automation/
-│   └── alert-webhook/
-│       ├── app.py
-│       ├── database.py
-│
-├── monitoring/
-│   ├── prometheus/
-│   └── alertmanager/
-│
-├── docs/
-│
-└── README.md
-
-
----
-
-# Running Locally
-
-## Start Backend
+Prerequisites: Node.js 18 or later.
 
 ```bash
-cd automation/alert-webhook
+cd app/sre-demo-service
+npm ci
+node server.js
+```
 
-python app.py
+In a second terminal, inspect the Prometheus metrics:
 
-Backend runs on:
-http://localhost:5001
+```bash
+curl http://localhost:3000/metrics
+```
 
-Start Frontend
-cd frontend
+The demo service uses port 3000 by default. Set `PORT` to use a different port.
 
-npm install
+## Reliability design
 
-npm run dev
+- [SLI specification](sli/sli-specification.md) defines the signals to measure.
+- [SLO specification](slo/slo-specification.md) defines initial targets over a 30-day window.
+- [Error budget policy](error-budget/error-budget-policy.md) explains budget use and response.
+- [Prometheus rules](monitoring/prometheus/rules/) calculate payment availability and burn rate and define alerts.
+- [Failure model](architecture/failure-model.md) records example failure paths.
 
-# Frontend runs on:
-http://localhost:5173
+The payment availability recording rule uses the same **99.99%** target documented for the Payment Service.
 
-# Example Incident
-Incident ID:
-INC-E4EBA625
+## Configuration boundary
 
-Alert:
-DatabaseConnectionFailure
+Prometheus and Alertmanager configuration, the webhook service, and dashboard source are examples of the intended incident path. To run the complete path end to end, configure the Prometheus scrape target for the demo service, install the webhook service dependencies, and start the frontend. These components do not currently have a one-command local orchestration file.
 
-Severity:
-Critical
+## Suggested verification
 
-Status:
-Firing
+1. Start the demo service and confirm `/metrics` responds.
+2. Configure Prometheus to scrape the service and load the rule files.
+3. Confirm the payment availability and burn-rate series appear.
+4. Trigger a test alert and inspect Alertmanager delivery.
+5. Start the webhook and dashboard, then verify that an alert becomes a visible incident.
 
-SRE Concepts Demonstrated
-✅ Monitoring
-✅ Alerting
-✅ Incident Management
-✅ Observability
-✅ Error Budgets
-✅ SLI/SLO Concepts
-✅ Reliability Engineering Workflow
-✅ Operational Dashboards  
-Future Improvements
-PostgreSQL migration
-Kubernetes deployment
-Grafana dashboards
-PagerDuty integration
-Automated remediation
-AI incident analysis
-Chaos engineering tests
+## Next improvement
 
-Author
-Godfrey Uyioghosa Glory
-Cloud / DevOps / SRE Engineer
+Add a Compose setup and a small scripted failure exercise so reviewers can reproduce the full alert-to-dashboard path with one command.
