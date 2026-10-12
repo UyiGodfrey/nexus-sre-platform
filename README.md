@@ -1,5 +1,7 @@
 # Nexus SRE Platform
 
+> **Portfolio navigation:** [Browse my featured Cloud & DevOps projects](https://github.com/UyiGodfrey/nexus-devops-platform/blob/main/PORTFOLIO.md).
+
 A portfolio project for practicing service metrics, alerting, SLOs, error budgets, and incident visibility.
 
 ## What is in the repository
